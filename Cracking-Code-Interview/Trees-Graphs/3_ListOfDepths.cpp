@@ -6,62 +6,74 @@
 */
 #include <iostream>
 #include <vector>
+#include <queue>
+#include <list>
 
 using namespace std;
 
 // Definition for a binary tree node
-struct BinaryTreeNode {
-    int data;
-    BinaryTreeNode* left;
-    BinaryTreeNode* right;
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
 
-    BinaryTreeNode(int value) : data(value), left(nullptr), right(nullptr) {}
+    TreeNode(int value) : val(value), left(nullptr), right(nullptr) {}
 };
 
-vector<vector<int>> solution(BinaryTreeNode* head) {
-    int counter = 0;
-    vector<vector<int>> listOfLists;
-    traverseAndAppend(listOfLists, head, counter);
-    return listOfLists;
-}
+vector<list<TreeNode*> > createLevelLinkedList(TreeNode* root) {
+    vector<list<TreeNode*> > result;
+    queue<TreeNode*> current;
 
-void traverseAndAppend(vector<vector<int>>& list, BinaryTreeNode* node, int counter) {
-    if (node != nullptr) {
-        addToList(list, counter, node->data);
-        traverseAndAppend(list, node->left, counter + 1);
-        traverseAndAppend(list, node->right, counter + 1);
+    if (root != nullptr) {
+        current.push(root);
     }
-}
 
-void addToList(vector<vector<int>>& list, int counter, int value) {
-    try {
-        list[counter].push_back(value);
-    } catch (const out_of_range& error) {
-        list.push_back(vector<int>());
-        list[counter].push_back(value);
+    while (!current.empty()) {
+        //appends a new empty list to the end of "result" vector
+        result.push_back(list<TreeNode*>());
+        queue<TreeNode*> parents;
+        swap(current, parents);
+
+        while (!parents.empty()) {
+            TreeNode* parent = parents.front();
+            parents.pop();
+            //result is a vector of lists. result.back() returns a ref to the last list in vector
+            //then the push_back() function is called on that list.
+            result.back().push_back(parent);
+
+            if (parent->left != nullptr) {
+                current.push(parent->left);
+            }
+            if (parent->right != nullptr) {
+                current.push(parent->right);
+            }
+        }
     }
+
+    return result;
 }
 
 int main() {
     // Create a binary tree
-    BinaryTreeNode* root = new BinaryTreeNode(4);
-    root->left = new BinaryTreeNode(2);
-    root->right = new BinaryTreeNode(6);
-    root->left->left = new BinaryTreeNode(1);
-    root->left->right = new BinaryTreeNode(3);
-    root->right->left = new BinaryTreeNode(5);
-    root->right->right = new BinaryTreeNode(7);
+    TreeNode* root = new TreeNode(10);
+    root->left = new TreeNode(8);
+    root->right = new TreeNode(12);
+    root->left->left = new TreeNode(6);
+    root->left->right = new TreeNode(9);
+    root->right->left = new TreeNode(11);
+    // root->right->right = new TreeNode(7);
 
-    // Create list of lists of nodes at each depth
-    vector<vector<int>> lists = solution(root);
+    // Create level-linked lists
+    vector<list<TreeNode*> > lists = createLevelLinkedList(root);
 
-    // Print the list of lists
-    for (const auto& innerList : lists) {
-        for (const auto& value : innerList) {
-            cout << value << " ";
+    // Print the level-linked lists
+    for (const auto& level : lists) {
+        for (const auto& node : level) {
+            cout << node->val << " ";
         }
         cout << endl;
     }
 
     return 0;
 }
+

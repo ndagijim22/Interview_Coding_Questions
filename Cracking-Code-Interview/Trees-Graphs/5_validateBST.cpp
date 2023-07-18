@@ -3,118 +3,84 @@
 */
 
 #include <iostream>
-#include <limits.h>
+#include <limits>
 
 using namespace std;
 
-class TreeNode{
-    public:
-        int data;
-        struct TreeNode* left;
-        struct TreeNode* right;
+// Definition for a binary tree node
+struct TreeNode {
+    int val;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(int value) : val(value), left(nullptr), right(nullptr) {}
 };
 
-//create Node
-TreeNode* newNode(int data){
-    TreeNode* node = new TreeNode();
-    node->data = data;
-    node->left = NULL;
-    node->right = NULL;
-    
-    return node;
+bool checkBST(TreeNode* n) {
+    return checkBST(n, nullptr, nullptr);
 }
-TreeNode* insertFunc(TreeNode* root, int value){
-    //base case
-    //it checks if the current node is nullptr, meaning we have reached the end of subtree
-    if(!root)
-        return newNode(value);
-    
-    if(value > root->data){
-        root->right = insertFunc(root->right, value);
-    }
-    else {
-        root->left = insertFunc(root->left, value);
+
+bool checkBST(TreeNode* n, int* min, int* max) {
+    // Base case
+    //an empty tree is considered a valid BST
+    if (n == nullptr)
+        return true;
+    /*
+        The purpose of this condition is to check if the value of the current node
+        n->val violates the range boundaries specified by min and max. 
+        if the value of the current node is outside the valid range for the current subtree
+        it means that the tree is not a valid BST, and the function returns false
+    */
+    if ((min != nullptr && n->val <= *min) || (max != nullptr && n->val > *max)) {
+        return false;
     }
 
-    return root;
-}
-
-//algorithm
-//Source: https://www.youtube.com/watch?v=yEwSGhSsT0U
-
-//helper functions
-bool isSubtreeLesser(TreeNode* root, int value){
-
-    if(root == NULL) return true;
-    if(root->data <= value
-        && isSubtreeLesser(root->left, value)
-        && isSubtreeLesser(root->right, value))
-        return true;
-    else
+    if (!checkBST(n->left, min, &(n->val)) || !checkBST(n->right, &(n->val), max)) {
         return false;
+    }
 
-}
-bool isSubtreeGreater(TreeNode* root, int value){
-
-    if(root == NULL) return true;
-    if(root->data > value
-        && isSubtreeGreater(root->left, value)
-        && isSubtreeGreater(root->right, value))
-        return true;
-    else
-        return false;
+    return true;
 }
 
-bool isBST(TreeNode* root){
-
-    if(root == NULL) return true;
-    if(isSubtreeLesser(root->left, root->data) 
-        && isSubtreeGreater(root->right, root->data)
-        && isBST(root->left) && isBST(root->right))
-        return true;
-    else
-        return false;
-    
-}
-
-//Most efficient solution
-//Algorithm
-bool isBSTUtil(TreeNode* root, int minVal, int maxVal){
-    if(root == NULL)
-        return true;
-    
-    if(root->data < minVal && root->data > maxVal
-        && isBSTUtil(root->left, minVal, root->data)
-        && isBSTUtil(root->right, root->data, maxVal))
-        return true;
-    else 
-        return false;
-}
-
-bool isBinarySearchTree(TreeNode* root){
-    return isBSTUtil(root, INT_MIN, INT_MAX);
-}
-
-void preOrder(TreeNode* root){
-    if(root == NULL)
+//Solution #2: In-order traversal: Only works when No duplicates in the tree
+int index = 0;
+void copyBST(TreeNode root, int[] array){
+    if(root == nullptr)
         return;
 
-    cout << root->data << " ";
-    preOrder(root->left);
-    preOrder(root->right);
+    copyBST(root->left, array);
+    arry[index] = root->data;
+    index++;
+    copyBST(root->right, array);
 }
-//Driver code
-int main(){
-    TreeNode* root = NULL;
-    root = newNode(34);
-    
-    insertFunc(root, 3);
-    insertFunc(root, 40);
-    insertFunc(root, 37);
-    insertFunc(root, 35);
-    insertFunc(root, 300);
-    
-    preOrder(root);
-    cout << "Is BST or Not " << isBinarySearchTree(root) << endl;
+
+bool checkBST(TreeNode root){
+    vector<int> array;
+    copyBST(root, array);
+
+    for(int i = 0; i < array.size(); i++){
+        if(array[i] <= array[i - 1])
+            return false;
+    }
+
+    return true;
+}
+
+int main() {
+    // Create a binary tree
+    TreeNode* root = new TreeNode(4);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(6);
+    root->left->left = new TreeNode(1);
+    root->left->right = new TreeNode(3);
+    root->right->left = new TreeNode(5);
+    root->right->right = new TreeNode(7);
+
+    // Check if the tree is a valid BST
+    bool isValidBST = checkBST(root);
+
+    // Print the result
+    cout << "Is the tree a valid BST? " << (isValidBST ? "Yes" : "No") << endl;
+
     return 0;
 }
