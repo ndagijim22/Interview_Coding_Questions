@@ -35,7 +35,7 @@ int getHeight(TreeNode* root) {
     return max(getHeight(root->left), getHeight(root->right)) + 1;
 }
 
-bool isBalanced(TreeNode* root) {
+bool isBalanced1(TreeNode* root) {
     if (root == nullptr)
         return true;
 
@@ -45,7 +45,7 @@ bool isBalanced(TreeNode* root) {
     } else {
         // Recursevely check left and right of each subtree in the the tree
         //we did not return true, b/c we want to check all the subtrees
-        return isBalanced(root->left) && isBalanced(root->right);
+        return isBalanced1(root->left) && isBalanced1(root->right);
     }
 }
 
@@ -57,23 +57,23 @@ int checkHeight(TreeNode* root) {
         return -1;
     //we can return -1 as an error instead of numeric_limits<int>::min()
     int leftHeight = checkHeight(root->left);
-    if (leftHeight == -1)
-        return -1; // pass error up
+    if (leftHeight == numeric_limits<int>::min())
+        return numeric_limits<int>::min(); // pass error up
 
     int rightHeight = checkHeight(root->right);
-    if (rightHeight == -1)
-        return -1; // pass error up
+    if (rightHeight == numeric_limits<int>::min())
+        return numeric_limits<int>::min(); // pass error up
 
     int heightDiff = leftHeight - rightHeight;
     if (abs(heightDiff) > 1) {
-        return -1; // found error -> pass it back
+        return numeric_limits<int>::min(); // found error -> pass it back
     } else {
         return max(leftHeight, rightHeight) + 1;
     }
 }
 
 bool isBalanced(TreeNode* root) {
-    return checkHeight(root) != -1;
+    return checkHeight(root) != numeric_limits<int>::min();
 }
 
 int main() {

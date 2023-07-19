@@ -1,5 +1,5 @@
 /*
-    Validata BST: implement a function to check if a binary tree is a binary search tree
+    Validate BST: implement a function to check if a binary tree is a binary search tree
 */
 
 #include <iostream>
@@ -16,9 +16,7 @@ struct TreeNode {
     TreeNode(int value) : val(value), left(nullptr), right(nullptr) {}
 };
 
-bool checkBST(TreeNode* n) {
-    return checkBST(n, nullptr, nullptr);
-}
+
 
 bool checkBST(TreeNode* n, int* min, int* max) {
     // Base case
@@ -40,31 +38,35 @@ bool checkBST(TreeNode* n, int* min, int* max) {
     }
 
     return true;
+    
+}
+bool validateBST(TreeNode* n) {
+    return checkBST(n, nullptr, nullptr);
 }
 
 //Solution #2: In-order traversal: Only works when No duplicates in the tree
-int index = 0;
-void copyBST(TreeNode root, int[] array){
-    if(root == nullptr)
-        return;
+// int index = 0;
+// void copyBST(TreeNode root, int[] array){
+//     if(root == nullptr)
+//         return;
 
-    copyBST(root->left, array);
-    arry[index] = root->data;
-    index++;
-    copyBST(root->right, array);
-}
+//     copyBST(root->left, array);
+//     arry[index] = root->data;
+//     index++;
+//     copyBST(root->right, array);
+// }
 
-bool checkBST(TreeNode root){
-    vector<int> array;
-    copyBST(root, array);
+// bool checkBST2(TreeNode root){
+//     vector<int> array;
+//     copyBST(root, array);
 
-    for(int i = 0; i < array.size(); i++){
-        if(array[i] <= array[i - 1])
-            return false;
-    }
+//     for(int i = 0; i < array.size(); i++){
+//         if(array[i] <= array[i - 1])
+//             return false;
+//     }
 
-    return true;
-}
+//     return true;
+// }
 
 int main() {
     // Create a binary tree
@@ -74,10 +76,11 @@ int main() {
     root->left->left = new TreeNode(1);
     root->left->right = new TreeNode(3);
     root->right->left = new TreeNode(5);
-    root->right->right = new TreeNode(7);
+    // root->right->right = new TreeNode(7);
+    root->right->right = new TreeNode(3);
 
     // Check if the tree is a valid BST
-    bool isValidBST = checkBST(root);
+    bool isValidBST = validateBST(root);
 
     // Print the result
     cout << "Is the tree a valid BST? " << (isValidBST ? "Yes" : "No") << endl;

@@ -12,74 +12,37 @@
         f, e, a, b, d, c
 
         SOURCE: https://www.geeksforgeeks.org/find-the-ordering-of-tasks-from-given-dependencies/
+        WATCH THIS: https://www.youtube.com/watch?v=_BGK0kpE4oE 
+        
 */
-// CPP program to find Topological sorting using
-// DFS
-#include <iostream>
-#include <vector>
-#include <unordered_set>
-#include <string>
-#include <utility>
 
-// CPP program to find Topological sorting using
-// DFS
-
-using namespace std;
-
-// Returns adjacency list representation of graph from
-// given set of pairs.
-vector<unordered_set<int> > make_graph(int numTasks,
-			vector<pair<int, int> >& prerequisites)
-{
-	vector<unordered_set<int> > graph(numTasks);
-	for (auto pre : prerequisites)
-		graph[pre.second].insert(pre.first);
-	return graph;
+std::stack<Project*> orderProjects(std::vector<Project*>& projects) {
+    std::stack<Project*> stack;
+    for (Project* project : projects) {
+        if (project->getState() == Project::BLANK) {
+            if (!doDFS(project, stack)) {
+                return std::stack<Project*>();
+            }
+        }
+    }
+    return stack;
 }
 
-// Does DFS and adds nodes to Topological Sort
-bool dfs(vector<unordered_set<int> >& graph, int node,
-		vector<bool>& onpath, vector<bool>& visited,
-								vector<int>& toposort)
-{
-	if (visited[node])
-		return false;
-	onpath[node] = visited[node] = true;
-	for (int neigh : graph[node])
-		if (onpath[neigh] || dfs(graph, neigh, onpath, visited, toposort))
-			return true;
-	toposort.push_back(node);
-	return onpath[node] = false;
-}
+bool doDFS(Project* project, std::stack<Project*>& stack) {
+    if (project->getState() == Project::PARTIAL) {
+        return false; // Cycle detected
+    }
 
-// Returns an order of tasks so that all tasks can be
-// finished.
-vector<int> findOrder(int numTasks, vector<pair<int, int> >& prerequisites)
-{
-	vector<unordered_set<int> > graph = make_graph(numTasks, prerequisites);
-	vector<int> toposort;
-	vector<bool> onpath(numTasks, false), visited(numTasks, false);
-	for (int i = 0; i < numTasks; i++)
-		if (!visited[i] && dfs(graph, i, onpath, visited, toposort))
-			return {};
-	reverse(toposort.begin(), toposort.end());
-	return toposort;
-}
-
-int main()
-{
-	int numTasks = 4;
-	vector<pair<int, int> > prerequisites;
-
-	// for prerequisites: [[1, 0], [2, 1], [3, 2]]
-	prerequisites.push_back(make_pair(1, 0));
-	prerequisites.push_back(make_pair(2, 1));
-	prerequisites.push_back(make_pair(3, 2));
-	vector<int> v = findOrder(numTasks, prerequisites);
-
-	for (int i = 0; i < v.size(); i++) {
-		cout << v[i] << " ";
-	}
-
-	return 0;
+    if (project->getState() == Project::BLANK) {
+        project->setState(Project::PARTIAL);
+        std::vector<Project*> children = project->getChildren();
+        for (Project* child : children) {
+            if (!doDFS(child, stack)) {
+                return false;
+            }
+        }
+        project->setState(Project::COMPLETE);
+        stack.push(project);
+    }
+    return true;
 }
