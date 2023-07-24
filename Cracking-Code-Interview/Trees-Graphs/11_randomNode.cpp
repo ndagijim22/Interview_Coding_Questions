@@ -1,6 +1,6 @@
 /*
-    Random Node: you are implementing a binary search tree calss from scratch, which
-    in addition to insert, find, and delete has a method getRandomNode() whihc returns
+    Random Node: you are implementing a binary search tree class from scratch, which
+    in addition to insert, find, and delete has a method getRandomNode() which returns
     a random node from the tree. All nodes should be equally likes to be chosen. 
     design and implement an algorithm for getRandomNode, and explain how you would implement
     the rest of the method.
