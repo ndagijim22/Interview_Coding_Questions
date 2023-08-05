@@ -1,0 +1,22 @@
+{
+    "files.associations": {
+        "new": "cpp",
+        "array": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "memory": "cpp",
+        "tuple": "cpp",
+        "variant": "cpp",
+        "__functional_base": "cpp",
+        "utility": "cpp",
+        "*.tcc": "cpp",
+        "functional": "cpp",
+        "vector": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "list": "cpp",
+        "iostream": "cpp",
+        "random": "cpp",
+        "algorithm": "cpp"
+    }
+}

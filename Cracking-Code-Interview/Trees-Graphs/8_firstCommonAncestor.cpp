@@ -2,122 +2,85 @@
     First Common Ancestor: design an algorithm and write code to find the first common ancestor
     of two nodes in a binary tree. Avoid storing additional nodes in a data structure
     NOTE: thsi is not necessarily a binary search tree
+
+    ALGORITHM: 
+    1. Search the two nodes in the Binary tree
+    2. if (node found)
+            return node
+        else
+            return NULL;
+    3. When some node receives both left and right pinter as not NULL, then it is LCA
+       else return what it receives
 */
 #include <iostream>
 #include <vector>
 
-struct BinaryTreeNode {
+struct TreeNode {
     int val;
-    BinaryTreeNode* left;
-    BinaryTreeNode* right;
-    BinaryTreeNode* parent;
-    BinaryTreeNode(int val) : val(val), left(nullptr), right(nullptr), parent(nullptr) {}
+    TreeNode* left;
+    TreeNode* right;
+    TreeNode(int val) : val(val), left(nullptr), right(nullptr) {};
 };
 
-/*
-    SOLUTION #1: Using a data structure
-*/
-BinaryTreeNode* solution1(BinaryTreeNode* p, BinaryTreeNode* q) {
-    std::vector<BinaryTreeNode*> pList;
-    std::vector<BinaryTreeNode*> qList;
+TreeNode* firstCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q){
+    //basic check
+    if(root == nullptr)
+        return nullptr;
 
-    while (p->parent != nullptr) {
-        p = p->parent;
-        pList.push_back(p);
+    //Searching of the node. 
+    if(root == q || root == p)
+        return root;
+    
+    //The inorder traversal. Traverse the tree when you find the node return it
+    //while traversing we're checking the above if stment. when we get the need we return it
+    TreeNode* left = firstCommonAncestor(root->left, p, q);
+    TreeNode* right = firstCommonAncestor(root->right, p, q);
+
+    //check if both right and left node are not null
+    //this is the case when right and left child have both nodes
+    //which automatically shows that the root is the first common ancestor
+    if(left != nullptr && right != nullptr){
+        return root;
     }
-
-    while (q->parent != nullptr) {
-        q = q->parent;
-        qList.push_back(q);
+    else{
+        //if left node is returned and right node is empty return left
+        //otherwise return right node
+        return (left ? left : right);
     }
-
-    for (BinaryTreeNode* binaryTreeNode : pList) {
-        if (std::find(qList.begin(), qList.end(), binaryTreeNode) != qList.end())
-            return binaryTreeNode;
-    }
-
-    return nullptr;
 }
 
-/*
-    SOLUTION #2: No data structure and we know that the nodes link to the parent
-    Algorithm: first we get the depth of both nodes, the difference between these 2 will tell 
-    us how much we need to move the lowest one up. Once we know that we can move each of them up 
-    until we found the common ancestor, if no ancestor is found we just return null
-*/
-BinaryTreeNode* moveUp(BinaryTreeNode* node, int difference) {
-    while (difference != 0) {
-        node = node->parent;
-        difference--;
-    }
-    return node;
-}
-
-int depth(BinaryTreeNode* n) {
-    int c = 0;
-    while (n->parent != nullptr) {
-        c++;
-        n = n->parent;
-    }
-    return c;
-}
-
-BinaryTreeNode* solution(BinaryTreeNode* p, BinaryTreeNode* q) {
-    int difference = depth(p) - depth(q);
-    BinaryTreeNode* first = difference > 0 ? p : q; // lowest depth
-    BinaryTreeNode* second = difference < 0 ? p : q;
-    first = moveUp(first, difference);
-
-    while (first != second && first->parent != nullptr && second->parent != nullptr) {
-        first = first->parent;
-        second = second->parent;
-    }
-
-    return (first == nullptr || second == nullptr) ? nullptr : first;
-}
-
-
+//Driver code
 int main() {
-    // Example usage
-    BinaryTreeNode* node1 = new BinaryTreeNode(1);
-    BinaryTreeNode* node2 = new BinaryTreeNode(2);
-    BinaryTreeNode* node3 = new BinaryTreeNode(3);
-    BinaryTreeNode* node4 = new BinaryTreeNode(4);
-    BinaryTreeNode* node5 = new BinaryTreeNode(5);
-    BinaryTreeNode* node6 = new BinaryTreeNode(6);
-    BinaryTreeNode* node7 = new BinaryTreeNode(7);
+    TreeNode* root = new TreeNode(2);
+    root->left = new TreeNode(10);
+    root->right = new TreeNode(30);
+    root->left->left = new TreeNode(55);
+    root->left->right = new TreeNode(15);
+    root->left->right->right = new TreeNode(17);
+    root->left->left->left = new TreeNode(3);
+    root->left->left->right = new TreeNode(35);
 
-    // Creating a sample binary tree
-    node1->left = node2;
-    node1->right = node3;
-    node2->parent = node1;
-    node3->parent = node1;
-
-    node2->left = node4;
-    node2->right = node5;
-    node4->parent = node2;
-    node5->parent = node2;
-
-    node3->left = node6;
-    node3->right = node7;
-    node6->parent = node3;
-    node7->parent = node3;
-
-    BinaryTreeNode* commonAncestor = solution(node4, node6);
-    if (commonAncestor != nullptr) {
-        std::cout << "Common Ancestor: " << commonAncestor->val << std::endl;
+    // Test the solution
+    TreeNode* p = root->left->left->left;
+    TreeNode* q = root->left->right->right;
+    TreeNode* result = firstCommonAncestor(root, nullptr, nullptr);
+    if (result != nullptr) {
+        std::cout << "Lowest Common Ancestor: " << result->val << std::endl;
     } else {
-        std::cout << "No Common Ancestor found." << std::endl;
+        std::cout << "One or both nodes not found in the tree." << std::endl;
     }
 
-    // Don't forget to clean up the allocated memory (assuming it's not part of a more extensive data structure handling).
-    delete node1;
-    delete node2;
-    delete node3;
-    delete node4;
-    delete node5;
-    delete node6;
-    delete node7;
+    // Free the allocated memory (optional if not using smart pointers)
+    delete root->left->right->right;
+    delete root->left->right->left;
+    delete root->right->right;
+    delete root->right->left;
+    delete root->left->right;
+    delete root->left->left;
+    delete root->right;
+    delete root->left;
+    delete root;
+
 
     return 0;
 }

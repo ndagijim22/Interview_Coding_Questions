@@ -15,41 +15,81 @@ struct TreeNode {
     int data;
     TreeNode* left;
     TreeNode* right;
+
     TreeNode(int val) : data(val), left(nullptr), right(nullptr) {}
 };
 
-bool containsTree(TreeNode* t1, TreeNode* t2);
 bool subTree(TreeNode* r1, TreeNode* r2);
 bool matchTree(TreeNode* r1, TreeNode* r2);
+bool containsTree(TreeNode* t1, TreeNode* t2);
+void getOrderString(TreeNode* node, std::string& sb);
 
-bool containsTree(TreeNode* t1, TreeNode* t2) {
-    // Base case: Empty tree is always a subtree
-    if (t2 == nullptr)
-        return true;
-
-    return subTree(t1, t2);
-}
 
 bool subTree(TreeNode* r1, TreeNode* r2) {
-    if (r1 == nullptr) {
-        return false; // Big tree empty & subtree not found
-    } else if (r1->data == r2->data && matchTree(r1, r2)) {
+        //base case
+    if(r2 == nullptr)
         return true;
-    }
-    return subTree(r1->left, r2) || subTree(r1->right, r2);
+
+    if(r1 == nullptr)
+        return false;
+    
+    //check the tree with root as current node
+    if(matchTree(r1, r2))
+        return true;
+    
+    //if the tree with root as current node doesn't match then try left and right
+    //subtrees one by one
+    bool leftTree = subTree(r1->left, r2);
+    bool rightTree = subTree(r1->right, r2);
+    // return subTree(r1->left, r2) || subTree(r1->right, r2);
+    return leftTree || rightTree;
 }
 
 bool matchTree(TreeNode* r1, TreeNode* r2) {
-    if (r1 == nullptr && r2 == nullptr) {
-        return true; // Nothing in the subtree
-    } else if (r1 == nullptr || r2 == nullptr) {
-        return false; // Exactly one tree is empty, therefore trees don't match
-    } else if (r1->data != r2->data) {
-        return false; // Data doesn't match
-    } else {
-        return matchTree(r1->left, r2->left) && matchTree(r1->right, r2->right);
-    }
+    //base case
+    if(r1 == nullptr && r2 == nullptr)
+        return true;
+    
+    if(r1 == nullptr || r2 == nullptr)
+        return false;
+    
+    //check if the data of both roots is same and data of left and right subtrees
+    // are also the same
+    bool leftTree = matchTree(r1->left, r2->left) ;
+    bool rightTree = matchTree(r1->right, r2->right);
+    // return (r1->data == r2->data && matchTree(r1->left, r2->left) 
+                                //  && matchTree(r1->right, r2->right));
+    return r1->data == r2->data && leftTree && rightTree;
+
 }
+
+            // SOLUTION # 2
+//this functions checks if the tree t2 is a subtree of t1 by comparing
+//their preorder traversal
+bool containsTree(TreeNode* t1, TreeNode* t2) {
+    std::string string1;
+    std::string string2;
+
+    getOrderString(t1, string1);
+    getOrderString(t2, string2);
+
+    return string1.find(string2) != std::string::npos;
+}
+
+/*
+    This function generates the preorder of the tree and stores it in a string
+
+*/
+void getOrderString(TreeNode* node, std::string& sb) {
+    if (node == nullptr) {
+        sb.append("X"); // add null indicator
+        return;
+    }
+    sb += std::to_string(node->data) + " "; // Add root
+    getOrderString(node->left, sb); // Add left
+    getOrderString(node->right, sb); // Add right
+}
+
 
 int main() {
     // Create the first tree
@@ -67,7 +107,8 @@ int main() {
     t2->right = new TreeNode(5);
 
     // Check if t2 is a subtree of t1
-    bool result = containsTree(t1, t2);
+    bool result = subTree(t1, t2);
+    // bool result = containsTree(t1, t2);
 
     // Output the result
     if (result) {

@@ -2,6 +2,9 @@
     LINK: https://leetcode.com/discuss/interview-question/912928/amazon-oa-2020-gifting-groups-friend-circle-lc-doesnt-solve-this
 
 */
+#include <vector>
+#include <iostream>
+
 using namespace std;
 
 void doDfs(vector<string>&related, int ind, vector<bool>&vis) {
