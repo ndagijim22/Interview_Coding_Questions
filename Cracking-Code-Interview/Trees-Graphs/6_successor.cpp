@@ -1,6 +1,7 @@
 /*
     Successor: Write an algorithm to find the next ndoe (i.e in-order successor)
-    of a given node in a binary search tree. you may assume that each node has a link to its parent
+    of a given node in a binary search tree. 
+    you may assume that each node has a link to its parent
 
 */
 #include <iostream>

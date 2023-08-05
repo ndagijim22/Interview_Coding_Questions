@@ -49,9 +49,10 @@ bool isBalanced1(TreeNode* root) {
     }
 }
 
-//Optimal solution: use getHeight to check is the tree is balanced at the same time as it's checking heights
-//retrun error when the tree is not balanced
+//Optimal solution: use getHeight to check if the tree is balanced at the same 
+//time as it's checking heights return error when the tree is not balanced
 //This code runs in O(N) time and O(H) space, where H is the height of the tree
+
 int checkHeight(TreeNode* root) {
     if (root == nullptr)
         return -1;

@@ -8,6 +8,8 @@
 #include <iostream>
 #include <random>
 
+using namespace std;
+
 class TreeNode {
 private:
     int data;
@@ -18,17 +20,50 @@ private:
 public:
     TreeNode(int d) : data(d), left(nullptr), right(nullptr), size(1) {}
 
+    //Returns a pointer to a randomly selected node from BST, with all the nodes
+    // having equal probability of being chosen. This is achieved using reservoir sampling
     TreeNode* getRandomNode() {
+        //calculates the size of left subtree rooted at the current node.
+        //if left child left is nullptr, teh leftSize is set to 0.
+        //otherwise, it is set to the size of teh left child
         int leftSize = (left == nullptr) ? 0 : left->size;
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<int> dist(0, size - 1);
+        //This creates a random number generator rd, which provides non-deterministic random
+        // numbers from the hardware device
+        random_device rd;
+
+        //This creates a Mersenne Twister random number generator gen using 
+        // the random numbers obtained fron rd
+        mt19937 gen(rd());
+
+        /*
+            This creates a uniform distribution dist that generates integers in 
+            the range [0, size - 1]. Here, size is the total number of nodes in
+            the current subtree (including the current node).
+        */
+        uniform_int_distribution<int> dist(0, size - 1);
+
+        /*
+            This generates a random integer index in the range [0, size - 1] 
+            using the uniform distribution dist and the Mersenne Twister generator gen.
+        */
         int index = dist(gen);
         
+        /*
+            The function then proceeds to determine which node to return as 
+            the random node based on the generated index:
+        */
+       //if generaded index < left size, this means the random node should come from
+       // the left subtree. In this case, the f(x) calls getRandomNode() recursively on the
+       // left childe 'left', effectively selecting a random node from the left subtree
         if (index < leftSize) {
             return left->getRandomNode();
+        
+        //if index is equal to leftsize. it means the random node should be the current node
+        //so the function returns the current node. so the function returns 'this' i.e current node
         } else if (index == leftSize) {
             return this;
+        
+        //Else go to the right  subtree
         } else {
             return right->getRandomNode();
         }
@@ -80,15 +115,15 @@ int main() {
     root.insertInOrder(6);
     root.insertInOrder(8);
 
-    std::cout << "Random Node: " << root.getRandomNode()->getData() << std::endl;
-    std::cout << "Random Node: " << root.getRandomNode()->getData() << std::endl;
+    cout << "Random Node: " << root.getRandomNode()->getData() << endl;
+    cout << "Random Node: " << root.getRandomNode()->getData() << endl;
 
     int target = 6;
     TreeNode* found = root.find(target);
     if (found) {
-        std::cout << "Node with data " << target << " found." << std::endl;
+        cout << "Node with data " << target << " found." << endl;
     } else {
-        std::cout << "Node with data " << target << " not found." << std::endl;
+        cout << "Node with data " << target << " not found." << endl;
     }
 
     return 0;
