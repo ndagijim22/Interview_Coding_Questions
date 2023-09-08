@@ -1,0 +1,25 @@
+/*
+        FACTORY DESIGN PATTERN
+    - It provides an interface for creating objects in a super class but allows 
+        subclasses to alter the type of objects that will be created
+    - in other others, it abstracts the process of object creation and allows 
+        the client code to work with created objects w/o having to know their 
+        specific classes
+    
+    TYPES OF FACTORY DESIGN
+
+    1. simple factory: class responsible for creating instances of other classes 
+        based on some input
+    2. factory method: this involves creating an abstract base class with a method 
+        for creating objects. subclasses of this base class provide concrete
+        implementation of the creation method to produce different types of obj
+    3. abstract factory: this pattern provides an interface for creating families of 
+                        related or dependent objects w/o specifying their concrete 
+                        classes. it used when there are multiple types of related 
+                        objects that need to be created together
+
+        The Factory Design Pattern promotes encapsulation, flexibility, and 
+        extensibility in object creation. It allows you to add new product types 
+        without modifying existing client code, adhering to the Open/Closed 
+        Principle from SOLID principles.
+*/

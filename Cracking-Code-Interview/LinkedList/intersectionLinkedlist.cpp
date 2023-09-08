@@ -17,10 +17,12 @@ ListNode* getIntersectionNode(ListNode* headA, ListNode* headB) {
 
     // Traverse both linked lists until they intersect (a == b)
     while (a != b) {
-        // If a reaches the end of list A, move it to the head of list B, otherwise move to the next node in list A
+        // If a reaches the end of list A, move it to the head of list B, 
+        // otherwise move to the next node in list A
         a = a == nullptr ? headB : a->next;
-
-        // If b reaches the end of list B, move it to the head of list A, otherwise move to the next node in list B
+       
+        // If b reaches the end of list B, move it to the head of list A, 
+        // otherwise move to the next node in list B
         b = b == nullptr ? headA : b->next;
     }
 
