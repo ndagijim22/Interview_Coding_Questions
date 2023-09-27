@@ -1,30 +1,40 @@
 #include <iostream>
+
 using namespace std;
 
-#define NAME_SIZE 50
-
-class Person{
-    //all members are private by default
-    int id;
-    char name[NAME_SIZE];
-
+class Myclass{
+    private:
+        int data;
+    
     public:
-        void aboutMe(){
-            cout << "I'm a person" << endl;
+        Myclass(int val): data(val) {}
+        //getter
+        int getData(){
+            return this->data;
         }
+
+        //setter
+        void setData(int val){
+            this->data = val;
+        }
+        void myFunc();
 };
 
-class Student : public Person{
+void Myclass:: myFunc(){
+    cout << data << endl;
+}
+
+class ChildClass : public Myclass{
+    private:
+        string name;
     public:
-        void aboutMe(){
-            cout << "I'm a student" << endl;
-        }
+        // ChildClass(string value){
+        //     this->name = value;
+        // }
 };
 
-int main(){
-    Student *p = new Student();
-    p->aboutMe();
-    delete p; //delete allocated memory
-
+int main(void){
+    Myclass obj(90);
+    obj.myFunc();
     return 0;
 }

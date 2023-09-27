@@ -8,7 +8,7 @@
           equal to the int value of the character. if at any time, we encouter that the array
           value is already true, it means the character with that int value is repeated.
 */
-
+#include <string>
 using namespace std;
 
 const int MAX_CHAR = 256;

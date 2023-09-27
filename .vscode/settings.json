@@ -21,6 +21,7 @@
         "iosfwd": "cpp",
         "iterator": "cpp",
         "__hash_table": "cpp",
-        "unordered_map": "cpp"
+        "unordered_map": "cpp",
+        "ostream": "cpp"
     }
 }
